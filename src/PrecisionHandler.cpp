@@ -1049,6 +1049,7 @@ bool PrecisionHandler::ParseCollisionEvent(const RE::BSAnimationGraphEvent* a_ev
 	for (auto& parameter : parameters) {
 		auto nameEnd = parameter.find('(');
 		auto parameterName = parameter.substr(0, nameEnd);
+
 		switch (hash(parameterName.data(), parameterName.size())) {
 		case "node"_h:
 			{
@@ -1270,6 +1271,19 @@ bool PrecisionHandler::ParseCollisionEvent(const RE::BSAnimationGraphEvent* a_ev
 					return false;
 				}
 				break;
+			}
+		default:
+			{
+				WriteLocker locker(extraParameterNamesLock);
+				if (_extraParameterNames.contains(parameterName)) {
+					std::string_view parsedString;
+					if (parseStringParameter(parameter, parsedString)) {
+						a_outCollisionDefinition.extraDataMap.emplace(std::make_pair(parameterName, parsedString));
+					} else {
+						logger::error("Invalid {} event payload - extra data could not be parsed - {}.{}", a_event->tag.data(), a_event->tag.data(), a_event->payload.data());
+						return false;
+					}
+				}
 			}
 		}
 	}
@@ -1813,6 +1827,17 @@ bool PrecisionHandler::RemovePrecisionLayerSetupCallback(SKSE::PluginHandle a_pl
 	WriteLocker locker(callbacksLock);
 
 	return precisionLayerSetupCallbacks.erase(a_pluginHandle);
+}
+
+bool PrecisionHandler::AddExtraParameterName(const std::string_view a_name)
+{
+	WriteLocker locker(extraParameterNamesLock);
+
+	if (_extraParameterNames.contains(a_name))
+		return false;
+
+	_extraParameterNames.emplace(a_name);
+	return true;
 }
 
 float PrecisionHandler::GetAttackCollisionReach(RE::ActorHandle a_actorHandle, RequestedAttackCollisionType a_collisionType /*= RequestedAttackCollisionType::Default*/) const

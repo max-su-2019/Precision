@@ -88,11 +88,15 @@ namespace PRECISION_API
 
 	struct PrecisionHitData
 	{
+		using ExtraDataCollections = std::unordered_map<std::string_view, std::string_view>;
+
 		PrecisionHitData(RE::Actor* a_attacker, RE::TESObjectREFR* a_target, RE::hkpRigidBody* a_hitRigidBody, RE::hkpRigidBody* a_hittingRigidBody, const RE::NiPoint3& a_hitPos,
-			const RE::NiPoint3& a_separatingNormal, const RE::NiPoint3& a_hitPointVelocity, RE::hkpShapeKey a_hitBodyShapeKey, RE::hkpShapeKey a_hittingBodyShapeKey) :
+			const RE::NiPoint3& a_separatingNormal, const RE::NiPoint3& a_hitPointVelocity, RE::hkpShapeKey a_hitBodyShapeKey, RE::hkpShapeKey a_hittingBodyShapeKey,
+			const ExtraDataCollections& a_extraDataMap) :
 			attacker(a_attacker),
 			target(a_target), hitRigidBody(a_hitRigidBody), hittingRigidBody(a_hittingRigidBody), hitPos(a_hitPos), separatingNormal(a_separatingNormal),
-			hitPointVelocity(a_hitPointVelocity), hitBodyShapeKey(a_hitBodyShapeKey), hittingBodyShapeKey(a_hittingBodyShapeKey)
+			hitPointVelocity(a_hitPointVelocity), hitBodyShapeKey(a_hitBodyShapeKey), hittingBodyShapeKey(a_hittingBodyShapeKey),
+			extraDataMap(a_extraDataMap)
 		{}
 
 		RE::Actor* attacker;
@@ -106,6 +110,8 @@ namespace PRECISION_API
 
 		RE::hkpShapeKey hitBodyShapeKey;
 		RE::hkpShapeKey hittingBodyShapeKey;
+
+		ExtraDataCollections extraDataMap;
 	};
 
 	enum class CollisionFilterComparisonResult : uint8_t
@@ -362,6 +368,17 @@ namespace PRECISION_API
 		/// <param name="a_hitPosition">Hit position</param>
 		/// <param name="a_impulseMult">Impulse strength multiplier</param>
 		virtual void ApplyHitImpulse2(RE::ActorHandle a_targetActorHandle, RE::ActorHandle a_sourceActorHandle, RE::hkpRigidBody* a_rigidBody, const RE::NiPoint3& a_hitVelocity, const RE::hkVector4& a_hitPosition, float a_impulseMult) noexcept = 0;
+	};
+
+	class IVPrecision5 : public IVPrecision4
+	{
+	public:
+		/// <summary>
+		/// Adds a custom parameter key for animation event payload annotations, so precisoin would parse it and store it data into the PrecisionHitData::extraDataMap;
+		/// </summary>
+		/// <param name="a_name">Name of your custom parameter key</param>
+		/// <returns>OK, NotRegistered</returns>
+		virtual APIResult AddExtraParameterName(const std::string_view a_name);
 	};
 
 	typedef void* (*_RequestPluginAPI)(const InterfaceVersion interfaceVersion);

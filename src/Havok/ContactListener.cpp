@@ -215,7 +215,7 @@ void ContactListener::ContactPointCallback(const RE::hkpContactPointEvent& a_eve
 			auto niSeparatingNormal = Utils::HkVectorToNiPoint(a_event.contactPoint->separatingNormal);
 			RE::NiPoint3 niHitVelocity = Utils::HkVectorToNiPoint(pointVelocity) * *g_worldScaleInverse;
 
-			PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
+			PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
 			auto callbackReturns = precisionHandler->RunWeaponWeaponCollisionCallbacks(precisionHitData);
 
 			for (auto& entry : callbackReturns) {
@@ -243,7 +243,7 @@ void ContactListener::ContactPointCallback(const RE::hkpContactPointEvent& a_eve
 				auto niSeparatingNormal = Utils::HkVectorToNiPoint(a_event.contactPoint->separatingNormal);
 				RE::NiPoint3 niHitVelocity = Utils::HkVectorToNiPoint(pointVelocity) * *g_worldScaleInverse;
 
-				PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
+				PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
 				auto callbackReturns = precisionHandler->RunWeaponProjectileCollisionCallbacks(precisionHitData);
 
 				for (auto& entry : callbackReturns) {

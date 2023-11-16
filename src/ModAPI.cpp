@@ -220,4 +220,13 @@ namespace Messaging
 		bool bAttackerIsPlayer = a_sourceActorHandle.native_handle() == 0x100000;
 		PrecisionHandler::GetSingleton()->ApplyHitImpulse(a_targetActorHandle, a_rigidBody, a_hitVelocity, a_hitPosition, a_impulseMult, true, bAttackerIsPlayer);
 	}
+
+	APIResult PrecisionInterface::AddExtraParameterName(const std::string_view a_name)
+	{
+		if (PrecisionHandler::GetSingleton()->AddExtraParameterName(a_name)) {
+			return APIResult::OK;
+		} else {
+			return APIResult::NotRegistered;
+		}
+	}
 }

@@ -44,7 +44,7 @@ void PendingHit::Run()
 		}
 	}
 
-	PRECISION_API::PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
+	PRECISION_API::PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
 
 	// run pre hit callbacks
 	if (precisionHandler->preHitCallbacks.size() > 0) {

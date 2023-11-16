@@ -83,6 +83,7 @@ AttackCollision::AttackCollision(RE::ActorHandle a_actorHandle, const CollisionD
 					bNoRecoil = a_collisionDefinition.bNoRecoil;
 					damageMult = a_collisionDefinition.damageMult;
 					groundShake = a_collisionDefinition.groundShake;
+					extraDataMap = a_collisionDefinition.extraDataMap;
 
 					lifetime = a_collisionDefinition.duration;
 					if (a_collisionDefinition.duration) {

@@ -229,6 +229,8 @@ public:
 	bool RemoveContactListenerCallback(SKSE::PluginHandle a_pluginHandle);
 	bool RemovePrecisionLayerSetupCallback(SKSE::PluginHandle a_pluginHandle);
 
+	bool AddExtraParameterName(const std::string_view a_name);
+
 	[[nodiscard]] float GetAttackCollisionReach(RE::ActorHandle a_actorHandle, RequestedAttackCollisionType a_collisionType = RequestedAttackCollisionType::Default) const;
 
 	[[nodiscard]] static bool IsActorActive(RE::ActorHandle a_actorHandle);
@@ -488,6 +490,9 @@ private:
 	std::unordered_map<SKSE::PluginHandle, CollisionFilterSetupCallback> collisionFilterSetupCallbacks;
 	std::unordered_map<SKSE::PluginHandle, ContactListenerCallback> contactListenerCallbacks;
 	std::unordered_map<SKSE::PluginHandle, PrecisionLayerSetupCallback> precisionLayerSetupCallbacks;
+
+	mutable Lock extraParameterNamesLock;
+	std::unordered_set<std::string_view> _extraParameterNames;
 
 	mutable Lock prePhysicsStepJobsLock;
 	std::vector<std::unique_ptr<GenericJob>> _prePhysicsStepJobs;

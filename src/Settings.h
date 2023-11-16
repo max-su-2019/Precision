@@ -47,6 +47,8 @@ struct TrailDefinition
 	TrailOverride trailOverride;
 };
 
+using ExtraDataCollections = std::unordered_map<std::string_view, std::string_view>;
+
 struct CollisionDefinition
 {
 	CollisionDefinition() = default;
@@ -67,9 +69,11 @@ struct CollisionDefinition
 		std::optional<float> a_lengthMult = std::nullopt,
 		std::optional<RE::NiTransform> a_transform = std::nullopt,
 		std::optional<RE::NiPoint3> a_groundShake = std::nullopt,
-		std::optional<TrailOverride> a_trailOverride = std::nullopt) :
+		std::optional<TrailOverride> a_trailOverride = std::nullopt,
+		ExtraDataCollections a_extraDataMap = {}) :
 		nodeName(a_nodeName),
-		ID(a_ID), bNoRecoil(a_bNoRecoil), bNoTrail(a_bNoTrail), bTrailUseTrueLength(a_bTrailUseTrueLength), bWeaponTip(a_bWeaponTip), damageMult(a_damageMult), duration(a_duration), durationMult(a_durationMult), delay(a_delay), capsuleRadius(a_capsuleRadius), radiusMult(a_radiusMult), capsuleLength(a_capsuleLength), lengthMult(a_lengthMult), transform(a_transform), groundShake(a_groundShake), trailOverride(a_trailOverride)
+		ID(a_ID), bNoRecoil(a_bNoRecoil), bNoTrail(a_bNoTrail), bTrailUseTrueLength(a_bTrailUseTrueLength), bWeaponTip(a_bWeaponTip), damageMult(a_damageMult), duration(a_duration), durationMult(a_durationMult), delay(a_delay), capsuleRadius(a_capsuleRadius), radiusMult(a_radiusMult), capsuleLength(a_capsuleLength), lengthMult(a_lengthMult), transform(a_transform), groundShake(a_groundShake), trailOverride(a_trailOverride),
+		extraDataMap(a_extraDataMap)
 	{}
 
 	std::string nodeName;
@@ -89,6 +93,7 @@ struct CollisionDefinition
 	std::optional<RE::NiTransform> transform;
 	std::optional<RE::NiPoint3> groundShake;
 	std::optional<TrailOverride> trailOverride;
+	std::unordered_map<std::string_view, std::string_view> extraDataMap;
 };
 
 struct AttackDefinition
