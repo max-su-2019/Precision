@@ -89,7 +89,7 @@ namespace PRECISION_API
 
 	struct PrecisionHitData
 	{
-		using ExtraDataCollections = std::unordered_map<std::string_view, std::string_view>;
+		using ExtraDataCollections = std::unordered_map<std::string, std::string>;
 
 		PrecisionHitData(RE::Actor* a_attacker, RE::TESObjectREFR* a_target, RE::hkpRigidBody* a_hitRigidBody, RE::hkpRigidBody* a_hittingRigidBody, const RE::NiPoint3& a_hitPos,
 			const RE::NiPoint3& a_separatingNormal, const RE::NiPoint3& a_hitPointVelocity, RE::hkpShapeKey a_hitBodyShapeKey, RE::hkpShapeKey a_hittingBodyShapeKey,

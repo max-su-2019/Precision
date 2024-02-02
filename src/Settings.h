@@ -47,7 +47,7 @@ struct TrailDefinition
 	TrailOverride trailOverride;
 };
 
-using ExtraDataCollections = std::unordered_map<std::string_view, std::string_view>;
+using ExtraDataCollections = std::unordered_map<std::string, std::string>;
 
 struct CollisionDefinition
 {
@@ -93,7 +93,7 @@ struct CollisionDefinition
 	std::optional<RE::NiTransform> transform;
 	std::optional<RE::NiPoint3> groundShake;
 	std::optional<TrailOverride> trailOverride;
-	std::unordered_map<std::string_view, std::string_view> extraDataMap;
+	ExtraDataCollections extraDataMap;
 };
 
 struct AttackDefinition
@@ -172,12 +172,14 @@ struct Settings
 
 	// Hitstop
 	static inline bool bEnableHitstop = true;
+	static inline bool bEnableNPCHitStop = false;
 	static inline bool bApplyHitstopToTarget = true;
 	static inline float fHitstopDurationNPC = 0.07f;
 	static inline float fHitstopDurationOther = 0.035f;
 	static inline float fHitstopSlowdownTimeMultiplier = 0.1f;
 	static inline float fHitstopDurationPowerAttackMultiplier = 1.3f;
 	static inline float fHitstopDurationTwoHandedMultiplier = 1.2f;
+	static inline float fHitstopDurationBlockedHitMultiplier = 0.3f;
 	static inline float fHitstopDurationDiminishingReturnsFactor = 0.5f;
 
 	static inline bool bEnableHitstopCameraShake = true;
@@ -188,6 +190,7 @@ struct Settings
 	static inline float fHitstopCameraShakeFrequency = 40.f;
 	static inline float fHitstopCameraShakePowerAttackMultiplier = 1.3f;
 	static inline float fHitstopCameraShakeTwoHandedMultiplier = 1.2f;
+	static inline float fHitstopCameraShakeBlockedHitMultiplier = 0.3f;
 	static inline float fHitstopCameraShakeDurationDiminishingReturnsFactor = 0.5f;
 
 	// Recoil
