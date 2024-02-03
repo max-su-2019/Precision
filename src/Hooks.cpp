@@ -27,6 +27,8 @@ namespace Hooks
 
 		FirstPersonStateHook::Hook();
 
+		HitEventHook::Hook();
+
 		logger::trace("...success");
 	}
 
@@ -2163,6 +2165,101 @@ namespace Hooks
 		}
 
 		return _GetUnarmedReach(a_actor);
+	}
+
+	void HitEventHook::Hooks::ProcessHitEvent::thunk(RE::Actor* a_target, RE::HitData* a_hitData)
+	{
+		func(a_target, a_hitData);
+
+		if (!a_target || !a_hitData || !a_hitData->attackData)
+			return;
+
+		auto attackerHandle = a_hitData->aggressor;
+		auto attacker = attackerHandle ? attackerHandle.get() : nullptr;
+		if (!attacker || !PrecisionHandler::IsActorActive(attackerHandle))
+			return;
+
+		if (Settings::bEnableHitstop || (Settings::bEnableHitstopCameraShake && attacker->IsPlayerRef())) {
+			auto precisionHandler = PrecisionHandler::GetSingleton();
+			//uint32_t hitCount = targetActor ? attackCollision->GetHitNPCCount() : attackCollision->GetHitCount();
+			uint32_t hitCount = a_target ? precisionHandler->GetHitNPCCount(attackerHandle) : precisionHandler->GetHitCount(attackerHandle);
+
+			bool bIsActorAlive = a_target ? !a_target->IsDead() : false;
+			bool bIsPowerAttack = false;
+			bool bIsTwoHanded = false;
+			bool bIsBlockedHit = a_hitData->flags.any(RE::HitData::Flag::kBlocked);
+
+			auto& attackData = attacker->GetActorRuntimeData().currentProcess->high->attackData;
+			if (attackData && attackData->data.flags.any(RE::AttackData::AttackFlag::kPowerAttack)) {
+				bIsPowerAttack = true;
+			}
+
+			if (auto attackingObject = attacker->GetAttackingWeapon()) {
+				if (auto attackingWeapon = attackingObject->object->As<RE::TESObjectWEAP>()) {
+					if (attackingWeapon->GetWeaponType() == RE::WEAPON_TYPE::kTwoHandAxe || attackingWeapon->GetWeaponType() == RE::WEAPON_TYPE::kTwoHandSword) {
+						bIsTwoHanded = true;
+					}
+				}
+			}
+
+			if (Settings::bEnableHitstop && (attacker->IsPlayerRef() || Settings::bEnableNPCHitStop)) {
+				float diminishingReturnsMultiplier = pow(Settings::fHitstopDurationDiminishingReturnsFactor, hitCount - 1);
+
+				float hitstopLength = (bIsActorAlive ? Settings::fHitstopDurationNPC : Settings::fHitstopDurationOther) * diminishingReturnsMultiplier;
+
+				if (bIsPowerAttack) {
+					hitstopLength *= Settings::fHitstopDurationPowerAttackMultiplier;
+				}
+
+				if (bIsTwoHanded) {
+					hitstopLength *= Settings::fHitstopDurationTwoHandedMultiplier;
+				}
+
+				if (bIsBlockedHit) {
+					hitstopLength *= Settings::fHitstopDurationBlockedHitMultiplier;
+				}
+
+				PrecisionHandler::AddHitstop(attackerHandle, hitstopLength, false);
+				if (Settings::bApplyHitstopToTarget && a_target) {
+					// don't apply to the player in first person because it feels weird
+					bool bIsPlayer = a_target->IsPlayerRef();
+					bool bIsFirstPerson = bIsPlayer && Utils::IsFirstPerson();
+
+					if (!bIsFirstPerson) {
+						PrecisionHandler::AddHitstop(a_target->GetHandle(), hitstopLength, true);
+					}
+				}
+			}
+
+			if (Settings::bEnableHitstopCameraShake && attacker->IsPlayerRef()) {
+				/*RE::NiPoint3 niHitPos = Utils::HkVectorToNiPoint(hkHitPos) * *g_worldScaleInverse;
+			ApplyCameraShake(targetActor ? Settings::fHitstopCameraShakeStrengthNPC : Settings::fHitstopCameraShakeStrengthOther, niHitPos, Settings::fHitstopCameraShakeLength);*/
+
+				//*g_currentCameraShakeStrength = targetActor ? Settings::fHitstopCameraShakeStrengthNPC : Settings::fHitstopCameraShakeStrengthOther;
+
+				float diminishingReturnsMultiplier = pow(Settings::fHitstopCameraShakeDurationDiminishingReturnsFactor, hitCount - 1);
+
+				float cameraShakeLength = (bIsActorAlive ? Settings::fHitstopCameraShakeDurationNPC : Settings::fHitstopCameraShakeDurationOther) * diminishingReturnsMultiplier;
+				float cameraShakeStrength = (bIsActorAlive ? Settings::fHitstopCameraShakeStrengthNPC : Settings::fHitstopCameraShakeStrengthOther) * diminishingReturnsMultiplier;
+
+				if (bIsPowerAttack) {
+					cameraShakeStrength *= Settings::fHitstopCameraShakePowerAttackMultiplier;
+					cameraShakeLength *= Settings::fHitstopCameraShakePowerAttackMultiplier;
+				}
+
+				if (bIsTwoHanded) {
+					cameraShakeStrength *= Settings::fHitstopCameraShakeTwoHandedMultiplier;
+					cameraShakeLength *= Settings::fHitstopCameraShakeTwoHandedMultiplier;
+				}
+
+				if (bIsBlockedHit) {
+					cameraShakeStrength *= Settings::fHitstopCameraShakeBlockedHitMultiplier;
+					cameraShakeLength *= Settings::fHitstopCameraShakeBlockedHitMultiplier;
+				}
+
+				precisionHandler->ApplyCameraShake(cameraShakeStrength, cameraShakeLength, Settings::fHitstopCameraShakeFrequency, 0.f);
+			}
+		}
 	}
 
 }
