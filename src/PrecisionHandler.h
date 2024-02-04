@@ -166,9 +166,9 @@ public:
 	static bool GetCachedWeaponMeshReach(RE::TESObjectWEAP* a_weapon, float& a_outReach);
 	static bool TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESObjectWEAP* a_weapon, float& a_outReach);
 
-	static void AddActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData);
-	static void RemoveActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData);
-	static std::shared_ptr<PrecisionHitData> GetActiveHitData(RE::ObjectRefHandle a_refHandle);
+	static RE::ObjectRefHandle AddCachedHitData(std::shared_ptr<PrecisionHitData> a_hitData);
+	static void RemoveCachedHitData(RE::ObjectRefHandle a_refHandle);
+	static std::shared_ptr<PrecisionHitData> GetCachedHitData(RE::ObjectRefHandle a_refHandle);
 
 	static inline ContactListener contactListener{};
 
@@ -203,8 +203,8 @@ public:
 	static inline Lock weaponMeshLengthLock;
 	static inline std::unordered_map<RE::TESObjectWEAP*, float> weaponMeshLengthMap;
 
-	static inline Lock activeHitDataLock;
-	static inline std::unordered_map<RE::ObjectRefHandle, std::shared_ptr<PrecisionHitData>> activeHitDataMap;
+	static inline Lock cachedHitDataLock;
+	static inline std::unordered_map<RE::ObjectRefHandle, std::shared_ptr<PrecisionHitData>> cachedHitDataMap;
 
 	static inline float bCameraShakeActive = false;
 	static inline float currentCameraShake = 0.f;

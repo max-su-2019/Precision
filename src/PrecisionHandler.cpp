@@ -1631,27 +1631,33 @@ bool PrecisionHandler::TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESOb
 	return false;
 }
 
-void PrecisionHandler::AddActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData)
+RE::ObjectRefHandle PrecisionHandler::AddCachedHitData(std::shared_ptr<PrecisionHitData> a_hitData)
 {
-	WriteLocker locker(activeHitDataLock);
+	WriteLocker locker(cachedHitDataLock);
 	if (a_hitData && a_hitData->target) {
-		activeHitDataMap.emplace(std::make_pair(a_hitData->target->GetHandle(), a_hitData));
+		auto refHandler = a_hitData->target->GetHandle();
+		if (refHandler) {
+			cachedHitDataMap.emplace(std::make_pair(a_hitData->target->GetHandle(), a_hitData));
+			return refHandler;
+		}
+	}
+
+	return RE::ObjectRefHandle();
+}
+
+void PrecisionHandler::RemoveCachedHitData(RE::ObjectRefHandle a_refHandle)
+{
+	WriteLocker locker(cachedHitDataLock);
+	if (a_refHandle) {
+		cachedHitDataMap.erase(a_refHandle);
 	}
 }
 
-void PrecisionHandler::RemoveActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData)
+std::shared_ptr<PRECISION_API::PrecisionHitData> PrecisionHandler::GetCachedHitData(RE::ObjectRefHandle a_refHandle)
 {
-	WriteLocker locker(activeHitDataLock);
-	if (a_hitData && a_hitData->target) {
-		activeHitDataMap.erase(a_hitData->target->GetHandle());
-	}
-}
-
-std::shared_ptr<PRECISION_API::PrecisionHitData> PrecisionHandler::GetActiveHitData(RE::ObjectRefHandle a_refHandle)
-{
-	ReadLocker locker(activeHitDataLock);
-	auto it = activeHitDataMap.find(a_refHandle);
-	if (it != activeHitDataMap.end()) 
+	ReadLocker locker(cachedHitDataLock);
+	auto it = cachedHitDataMap.find(a_refHandle);
+	if (it != cachedHitDataMap.end())
 		return it->second;
 
 	return nullptr;

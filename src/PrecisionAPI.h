@@ -381,7 +381,7 @@ namespace PRECISION_API
 		/// <returns>OK, NotRegistered</returns>
 		virtual APIResult AddExtraParameterName(const std::string_view a_name) noexcept = 0;
 
-		virtual std::shared_ptr<PrecisionHitData> GetActiveHitData(RE::ObjectRefHandle a_refHandle) noexcept = 0;
+		virtual std::shared_ptr<PrecisionHitData> GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept = 0;
 	};
 
 	typedef void* (*_RequestPluginAPI)(const InterfaceVersion interfaceVersion);

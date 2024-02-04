@@ -230,8 +230,8 @@ namespace Messaging
 		}
 	}
 
-	std::shared_ptr<PrecisionHitData> PrecisionInterface::GetActiveHitData(RE::ObjectRefHandle a_refHandle) noexcept
+	std::shared_ptr<PrecisionHitData> PrecisionInterface::GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept
 	{
-		return PrecisionHandler::GetActiveHitData(a_refHandle);
+		return PrecisionHandler::GetCachedHitData(a_refHandle);
 	}
 }

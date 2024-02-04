@@ -78,6 +78,6 @@ namespace Messaging
 
 		//InterfaceVersion5
 		virtual APIResult AddExtraParameterName(const std::string_view a_name) noexcept override;
-		virtual std::shared_ptr<PrecisionHitData> GetActiveHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
+		virtual std::shared_ptr<PrecisionHitData> GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
 	};
 }

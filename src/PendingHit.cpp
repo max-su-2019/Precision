@@ -77,7 +77,7 @@ void PendingHit::Run()
 	}
 
 	auto hitDataPtr = std::make_shared<PrecisionHitData>(precisionHitData);
-	PrecisionHandler::AddActiveHitData(hitDataPtr);
+	auto cachedHitRefHandle = PrecisionHandler::AddCachedHitData(hitDataPtr);
 
 	// add modifiers from the attack collision
 	damageMultiplicative += attackCollision->damageMult - multiplicativeBias;
@@ -243,7 +243,7 @@ void PendingHit::Run()
 		}
 	}
 
-	PrecisionHandler::RemoveActiveHitData(hitDataPtr);
+	PrecisionHandler::RemoveCachedHitData(cachedHitRefHandle);
 
 	PrecisionHandler::cachedAttackData.Clear();
 
