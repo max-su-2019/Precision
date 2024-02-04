@@ -7,6 +7,8 @@
 
 void PendingHit::Run()
 {
+	using namespace PRECISION_API;
+
 	if (bOnlyFX) {
 		RunFXOnly();
 		return;
@@ -44,7 +46,7 @@ void PendingHit::Run()
 		}
 	}
 
-	PRECISION_API::PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
+	PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
 
 	// run pre hit callbacks
 	if (precisionHandler->preHitCallbacks.size() > 0) {
@@ -73,6 +75,9 @@ void PendingHit::Run()
 			}
 		}
 	}
+
+	auto hitDataPtr = std::make_shared<PrecisionHitData>(precisionHitData);
+	PrecisionHandler::AddActiveHitData(hitDataPtr);
 
 	// add modifiers from the attack collision
 	damageMultiplicative += attackCollision->damageMult - multiplicativeBias;
@@ -237,6 +242,8 @@ void PendingHit::Run()
 			precisionHandler->RunPostHitCallbacks(precisionHitData, hitData);
 		}
 	}
+
+	PrecisionHandler::RemoveActiveHitData(hitDataPtr);
 
 	PrecisionHandler::cachedAttackData.Clear();
 

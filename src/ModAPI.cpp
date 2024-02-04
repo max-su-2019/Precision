@@ -221,12 +221,17 @@ namespace Messaging
 		PrecisionHandler::GetSingleton()->ApplyHitImpulse(a_targetActorHandle, a_rigidBody, a_hitVelocity, a_hitPosition, a_impulseMult, true, bAttackerIsPlayer);
 	}
 
-	APIResult PrecisionInterface::AddExtraParameterName(const std::string_view a_name)
+	APIResult PrecisionInterface::AddExtraParameterName(const std::string_view a_name) noexcept
 	{
 		if (PrecisionHandler::GetSingleton()->AddExtraParameterName(a_name)) {
 			return APIResult::OK;
 		} else {
 			return APIResult::NotRegistered;
 		}
+	}
+
+	std::shared_ptr<PrecisionHitData> PrecisionInterface::GetActiveHitData(RE::ObjectRefHandle a_refHandle) noexcept
+	{
+		return PrecisionHandler::GetActiveHitData(a_refHandle);
 	}
 }

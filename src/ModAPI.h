@@ -19,6 +19,7 @@ namespace Messaging
 	using CollisionFilterSetupCallback = ::PRECISION_API::CollisionFilterSetupCallback;
 	using ContactListenerCallback = ::PRECISION_API::ContactListenerCallback;
 	using PrecisionLayerSetupCallback = ::PRECISION_API::PrecisionLayerSetupCallback;
+	using PrecisionHitData = ::PRECISION_API::PrecisionHitData;
 
 	class PrecisionInterface : public InterfaceVersion5
 	{
@@ -76,6 +77,7 @@ namespace Messaging
 		virtual void ApplyHitImpulse2(RE::ActorHandle a_targetActorHandle, RE::ActorHandle a_sourceActorHandle, RE::hkpRigidBody* a_rigidBody, const RE::NiPoint3& a_hitVelocity, const RE::hkVector4& a_hitPosition, float a_impulseMult) noexcept override;
 
 		//InterfaceVersion5
-		virtual APIResult AddExtraParameterName(const std::string_view a_name);
+		virtual APIResult AddExtraParameterName(const std::string_view a_name) noexcept override;
+		virtual std::shared_ptr<PrecisionHitData> GetActiveHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
 	};
 }

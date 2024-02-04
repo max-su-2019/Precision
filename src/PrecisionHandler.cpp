@@ -1631,6 +1631,32 @@ bool PrecisionHandler::TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESOb
 	return false;
 }
 
+void PrecisionHandler::AddActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData)
+{
+	WriteLocker locker(activeHitDataLock);
+	if (a_hitData && a_hitData->target) {
+		activeHitDataMap.emplace(std::make_pair(a_hitData->target->GetHandle(), a_hitData));
+	}
+}
+
+void PrecisionHandler::RemoveActiveHitData(std::shared_ptr<PrecisionHitData> a_hitData)
+{
+	WriteLocker locker(activeHitDataLock);
+	if (a_hitData && a_hitData->target) {
+		activeHitDataMap.erase(a_hitData->target->GetHandle());
+	}
+}
+
+std::shared_ptr<PRECISION_API::PrecisionHitData> PrecisionHandler::GetActiveHitData(RE::ObjectRefHandle a_refHandle)
+{
+	ReadLocker locker(activeHitDataLock);
+	auto it = activeHitDataMap.find(a_refHandle);
+	if (it != activeHitDataMap.end()) 
+		return it->second;
+
+	return nullptr;
+}
+
 RE::NiPointer<RE::BGSAttackData>& PrecisionHandler::GetOppositeAttackEvent(RE::NiPointer<RE::BGSAttackData>& a_attackData, RE::BGSAttackDataMap* attackDataMap)
 {
 	if (!attackDataMap || !a_attackData) {
