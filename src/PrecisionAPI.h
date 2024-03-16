@@ -376,8 +376,27 @@ namespace PRECISION_API
 		/// <returns>OK, NotRegistered</returns>
 		virtual APIResult AddExtraParameterName(const char* a_name) noexcept = 0;
 
+		/// <summary>
+		/// Get cached PrecisionHitData from target actor.
+		/// </summary>
+		/// <param name="a_refHandle">Target actor handle</param>
+		/// <returns>PrecisionHitData*, or nullptr</returns>
 		virtual PrecisionHitData* GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept = 0;
+
+		/// <summary>
+		/// Get key-value from cached extra data map of target actor.
+		/// </summary>
+		/// <param name="a_refHandle">Target actor handle</param>
+		/// <param name="a_key">String key</param>
+		/// <returns>String value, or nullptr</returns>
 		virtual const char* GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept = 0;
+
+		/// <summary>
+		/// Get key-value from cached extra data map of corresponding PrecisionHitData.
+		/// </summary>
+		/// <param name="a_hitData">Pointer of PrecisionHitData that's valid</param>
+		/// <param name="a_key">String key</param>
+		/// <returns>String value, or nullptr</returns>
 		virtual const char* GetCachedExtraData(PrecisionHitData* a_hitData, const char* a_key) noexcept = 0;
 	};
 
