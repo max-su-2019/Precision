@@ -80,5 +80,6 @@ namespace Messaging
 		virtual APIResult AddExtraParameterName(const char* a_name) noexcept override;
 		virtual PrecisionHitData* GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
 		virtual const char* GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept override;
+		virtual const char* GetCachedExtraData(PrecisionHitData* a_hitData, const char* a_key) noexcept override;
 	};
 }

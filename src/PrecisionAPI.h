@@ -378,6 +378,7 @@ namespace PRECISION_API
 
 		virtual PrecisionHitData* GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept = 0;
 		virtual const char* GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept = 0;
+		virtual const char* GetCachedExtraData(PrecisionHitData* a_hitData, const char* a_key) noexcept = 0;
 	};
 
 	typedef void* (*_RequestPluginAPI)(const InterfaceVersion interfaceVersion);

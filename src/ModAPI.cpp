@@ -232,6 +232,10 @@ namespace Messaging
 
 	PrecisionHitData* PrecisionInterface::GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept
 	{
+		if (!a_refHandle) {
+			return nullptr;
+		}
+
 		auto* cachedHitData = PrecisionHandler::GetCachedHitData(a_refHandle);
 		
 		if (!cachedHitData) {
@@ -243,6 +247,10 @@ namespace Messaging
 
 	const char* PrecisionInterface::GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept
 	{
+		if (!a_refHandle) {
+			return nullptr;
+		}
+
 		auto* cachedHitData = PrecisionHandler::GetCachedHitData(a_refHandle);
 		
 		if (!cachedHitData) {
@@ -253,5 +261,14 @@ namespace Messaging
 		auto it = cachedExtraData.find(a_key);
 
 		return it != cachedExtraData.end() ? it->second.data() : nullptr;
+	}
+
+	const char* PrecisionInterface::GetCachedExtraData(PrecisionHitData* a_hitData, const char* a_key) noexcept
+	{
+		if (!a_hitData || !a_hitData->target) {
+			return nullptr;
+		}
+
+		return GetCachedExtraData(a_hitData->target->GetHandle(), a_key);
 	}
 }

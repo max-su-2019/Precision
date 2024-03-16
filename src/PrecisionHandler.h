@@ -202,10 +202,10 @@ public:
 	static inline std::unordered_set<RE::ActorHandle> ragdollsToRemove{};
 
 	static inline Lock weaponMeshLengthLock;
-	static inline std::unordered_map<RE::TESObjectWEAP*, float> weaponMeshLengthMap;
+	static inline std::unordered_map<RE::TESObjectWEAP*, float> weaponMeshLengthMap{};
 
 	static inline Lock cachedHitDataLock;
-	static inline std::unordered_map<RE::ObjectRefHandle, std::pair<PrecisionHitData, ExtraDataCollections>> cachedHitDataMap;
+	static inline std::unordered_map<RE::ObjectRefHandle, std::pair<PrecisionHitData, ExtraDataCollections>> cachedHitDataMap{};
 
 	static inline float bCameraShakeActive = false;
 	static inline float currentCameraShake = 0.f;
