@@ -1631,36 +1631,37 @@ bool PrecisionHandler::TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESOb
 	return false;
 }
 
-RE::ObjectRefHandle PrecisionHandler::AddCachedHitData(std::shared_ptr<PrecisionHitData> a_hitData)
+RE::ObjectRefHandle PrecisionHandler::AddCachedHitData(PrecisionHitData a_hitData, ExtraDataCollections a_extraData)
 {
 	WriteLocker locker(cachedHitDataLock);
-	if (a_hitData && a_hitData->target) {
-		auto refHandler = a_hitData->target->GetHandle();
-		if (refHandler) {
-			cachedHitDataMap.emplace(std::make_pair(a_hitData->target->GetHandle(), a_hitData));
-			return refHandler;
+
+	if (a_hitData.target) {
+		auto refHandle = a_hitData.target->GetHandle();
+		if (refHandle) {
+			cachedHitDataMap[refHandle] = CachedHitData{ a_hitData, a_extraData };
+			return refHandle;
 		}
 	}
 
-	return RE::ObjectRefHandle();
+	return RE::ObjectRefHandle{};
 }
 
 void PrecisionHandler::RemoveCachedHitData(RE::ObjectRefHandle a_refHandle)
 {
 	WriteLocker locker(cachedHitDataLock);
+
 	if (a_refHandle) {
 		cachedHitDataMap.erase(a_refHandle);
 	}
 }
 
-std::shared_ptr<PRECISION_API::PrecisionHitData> PrecisionHandler::GetCachedHitData(RE::ObjectRefHandle a_refHandle)
+PrecisionHandler::CachedHitData* PrecisionHandler::GetCachedHitData(RE::ObjectRefHandle a_refHandle)
 {
 	ReadLocker locker(cachedHitDataLock);
-	auto it = cachedHitDataMap.find(a_refHandle);
-	if (it != cachedHitDataMap.end())
-		return it->second;
 
-	return nullptr;
+	auto it = cachedHitDataMap.find(a_refHandle);
+
+	return it != cachedHitDataMap.end() ? std::addressof(it->second) : nullptr;
 }
 
 RE::NiPointer<RE::BGSAttackData>& PrecisionHandler::GetOppositeAttackEvent(RE::NiPointer<RE::BGSAttackData>& a_attackData, RE::BGSAttackDataMap* attackDataMap)
@@ -1927,8 +1928,8 @@ float PrecisionHandler::GetAttackCollisionReach(RE::ActorHandle a_actorHandle, R
 
 				if (auto niAVObject = actor->GetNodeByName(bIsLeftWeapon ? "WEAPON"sv : "SHIELD"sv)) {
 					auto node = niAVObject->AsNode();
-					if (node && node->children.size() > 0 && node->children[0]) {
-						weaponNode = node->children[0].get();
+					if (node && node->GetChildren().size() > 0 && node->GetChildren()[0]) {
+						weaponNode = node->GetChildren()[0].get();
 					}
 				}
 

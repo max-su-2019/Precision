@@ -77,7 +77,8 @@ namespace Messaging
 		virtual void ApplyHitImpulse2(RE::ActorHandle a_targetActorHandle, RE::ActorHandle a_sourceActorHandle, RE::hkpRigidBody* a_rigidBody, const RE::NiPoint3& a_hitVelocity, const RE::hkVector4& a_hitPosition, float a_impulseMult) noexcept override;
 
 		//InterfaceVersion5
-		virtual APIResult AddExtraParameterName(const std::string_view a_name) noexcept override;
-		virtual std::shared_ptr<PrecisionHitData> GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
+		virtual APIResult AddExtraParameterName(const char* a_name) noexcept override;
+		virtual PrecisionHitData* GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept override;
+		virtual const char* GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept override;
 	};
 }
