@@ -216,9 +216,9 @@ void ContactListener::ContactPointCallback(const RE::hkpContactPointEvent& a_eve
 			RE::NiPoint3 niHitVelocity = Utils::HkVectorToNiPoint(pointVelocity) * *g_worldScaleInverse;
 
 			PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
-			precisionHandler->CacheHitData(precisionHitData, attackCollision->extraDataMap);
+			auto cachedHitRefHandle = precisionHandler->CacheHitData(precisionHitData, attackCollision->extraDataMap);
 			auto callbackReturns = precisionHandler->RunWeaponWeaponCollisionCallbacks(precisionHitData);
-			precisionHandler->RemoveCachedHitData(precisionHitData.attacker->GetHandle());
+			precisionHandler->RemoveCachedHitData(cachedHitRefHandle);
 
 			for (auto& entry : callbackReturns) {
 				if (entry.bIgnoreHit) {
@@ -246,9 +246,9 @@ void ContactListener::ContactPointCallback(const RE::hkpContactPointEvent& a_eve
 				RE::NiPoint3 niHitVelocity = Utils::HkVectorToNiPoint(pointVelocity) * *g_worldScaleInverse;
 
 				PRECISION_API::PrecisionHitData precisionHitData(attackerActor, target, hitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
-				precisionHandler->CacheHitData(precisionHitData, attackCollision->extraDataMap);
+				auto cachedHitRefHandle = precisionHandler->CacheHitData(precisionHitData, attackCollision->extraDataMap);
 				auto callbackReturns = precisionHandler->RunWeaponProjectileCollisionCallbacks(precisionHitData);
-				precisionHandler->RemoveCachedHitData(precisionHitData.attacker->GetHandle());
+				precisionHandler->RemoveCachedHitData(cachedHitRefHandle);
 
 				for (auto& entry : callbackReturns) {
 					if (entry.bIgnoreHit) {
