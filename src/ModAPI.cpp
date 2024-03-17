@@ -221,7 +221,7 @@ namespace Messaging
 		PrecisionHandler::GetSingleton()->ApplyHitImpulse(a_targetActorHandle, a_rigidBody, a_hitVelocity, a_hitPosition, a_impulseMult, true, bAttackerIsPlayer);
 	}
 
-	APIResult PrecisionInterface::AddExtraParameterName(const std::string_view a_name) noexcept
+	APIResult PrecisionInterface::AddExtraParameterName(const char* a_name) noexcept
 	{
 		if (PrecisionHandler::GetSingleton()->AddExtraParameterName(a_name)) {
 			return APIResult::OK;
@@ -230,8 +230,45 @@ namespace Messaging
 		}
 	}
 
-	std::shared_ptr<PrecisionHitData> PrecisionInterface::GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept
+	PrecisionHitData* PrecisionInterface::GetCachedHitData(RE::ObjectRefHandle a_refHandle) noexcept
 	{
-		return PrecisionHandler::GetCachedHitData(a_refHandle);
+		if (!a_refHandle) {
+			return nullptr;
+		}
+
+		auto* cachedHitData = PrecisionHandler::GetCachedHitData(a_refHandle);
+		
+		if (!cachedHitData) {
+			return nullptr;
+		}
+
+		return std::addressof(cachedHitData->first);
+	}
+
+	const char* PrecisionInterface::GetCachedExtraData(RE::ObjectRefHandle a_refHandle, const char* a_key) noexcept
+	{
+		if (!a_refHandle) {
+			return nullptr;
+		}
+
+		auto* cachedHitData = PrecisionHandler::GetCachedHitData(a_refHandle);
+		
+		if (!cachedHitData) {
+			return nullptr;
+		}
+
+		auto& cachedExtraData = cachedHitData->second;
+		auto it = cachedExtraData.find(a_key);
+
+		return it != cachedExtraData.end() ? it->second.data() : nullptr;
+	}
+
+	const char* PrecisionInterface::GetCachedExtraData(PrecisionHitData* a_hitData, const char* a_key) noexcept
+	{
+		if (!a_hitData || !a_hitData->target) {
+			return nullptr;
+		}
+
+		return GetCachedExtraData(a_hitData->target->GetHandle(), a_key);
 	}
 }

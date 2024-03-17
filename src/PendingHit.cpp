@@ -46,7 +46,7 @@ void PendingHit::Run()
 		}
 	}
 
-	PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey, attackCollision->extraDataMap);
+	PrecisionHitData precisionHitData(attacker.get(), target.get(), originalHitRigidBody, hittingRigidBody, niHitPos, niSeparatingNormal, niHitVelocity, hitBodyShapeKey, hittingBodyShapeKey);
 
 	// run pre hit callbacks
 	if (precisionHandler->preHitCallbacks.size() > 0) {
@@ -76,9 +76,8 @@ void PendingHit::Run()
 		}
 	}
 
-	auto hitDataPtr = std::make_shared<PrecisionHitData>(precisionHitData);
-	auto cachedHitRefHandle = PrecisionHandler::AddCachedHitData(hitDataPtr);
-
+	auto cachedHitRefHandle = PrecisionHandler::AddCachedHitData(precisionHitData, attackCollision->extraDataMap);
+	
 	// add modifiers from the attack collision
 	damageMultiplicative += attackCollision->damageMult - multiplicativeBias;
 	staggerMultiplicative += attackCollision->staggerMult - multiplicativeBias;
