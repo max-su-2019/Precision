@@ -76,8 +76,8 @@ void PendingHit::Run()
 		}
 	}
 
-	auto cachedHitRefHandle = PrecisionHandler::AddCachedHitData(precisionHitData, attackCollision->extraDataMap);
-	
+	auto cachedHitRefHandle = PrecisionHandler::CacheHitData(precisionHitData, attackCollision->extraDataMap);
+
 	// add modifiers from the attack collision
 	damageMultiplicative += attackCollision->damageMult - multiplicativeBias;
 	staggerMultiplicative += attackCollision->staggerMult - multiplicativeBias;

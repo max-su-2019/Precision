@@ -167,7 +167,7 @@ public:
 	static bool TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESObjectWEAP* a_weapon, float& a_outReach);
 
 	using CachedHitData = std::pair<PrecisionHitData, ExtraDataCollections>;
-	static RE::ObjectRefHandle AddCachedHitData(PrecisionHitData a_hitData, ExtraDataCollections a_extraData);
+	static RE::ObjectRefHandle CacheHitData(PrecisionHitData a_hitData, ExtraDataCollections a_extraData);
 	static void RemoveCachedHitData(RE::ObjectRefHandle a_refHandle);
 	static CachedHitData* GetCachedHitData(RE::ObjectRefHandle a_refHandle);
 

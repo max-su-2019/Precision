@@ -1631,7 +1631,7 @@ bool PrecisionHandler::TryGetCachedWeaponMeshReach(RE::Actor* a_actor, RE::TESOb
 	return false;
 }
 
-RE::ObjectRefHandle PrecisionHandler::AddCachedHitData(PrecisionHitData a_hitData, ExtraDataCollections a_extraData)
+RE::ObjectRefHandle PrecisionHandler::CacheHitData(PrecisionHitData a_hitData, ExtraDataCollections a_extraData)
 {
 	WriteLocker locker(cachedHitDataLock);
 
